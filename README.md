@@ -1,18 +1,24 @@
-# Projeto base da JS Expert Week
+# New Project
 
-- Acesse o [index](./public/index/index.html) para visualizar a lista de titulos
-- Acesse o [bandersnatch](./public/bandersnatch/index.html) para acessar o titulo base do projeto
+> ✨ Bootstrapped with Create Snowpack App (CSA).
 
-## Lista de Títulos
+## Available Scripts
 
-![titulos](./prints/titulos.png)
+### npm start
 
-## Vídeo
+Runs the app in the development mode.
+Open http://localhost:8080 to view it in the browser.
 
-![titulos](./prints/demo.png)
+The page will reload if you make edits.
+You will also see any lint errors in the console.
 
-### Créditos
+### npm run build
 
-- Layout da lista foi baseada no  codepen do [Carlos Avila
-](https://codepen.io/cb2307/pen/XYxyeY)
-- Layout do video foi baseado no codepen do [Benjamin Pott](https://codepen.io/benjipott/pen/JELELN)
+Builds a static copy of your site to the `build/` folder.
+Your app is ready to be deployed!
+
+**For the best production performance:** Add a build bundler plugin like [@snowpack/plugin-webpack](https://github.com/snowpackjs/snowpack/tree/master/plugins/plugin-webpack) or [snowpack-plugin-rollup-bundle](https://github.com/ParamagicDev/snowpack-plugin-rollup-bundle) to your `snowpack.config.json` config file.
+
+### Q: What about Eject?
+
+No eject needed! Snowpack guarantees zero lock-in, and CSA strives for the same.
