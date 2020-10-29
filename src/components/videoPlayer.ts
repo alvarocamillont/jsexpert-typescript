@@ -1,5 +1,6 @@
 import type { Manifest, NetworkManifest, Video } from './manifest.interface';
 import type { Network } from './network';
+import type { VideoComponent } from './videoComponent';
 
 export class VideoMediaPlayer {
   manifestJSON: Manifest;
@@ -9,11 +10,18 @@ export class VideoMediaPlayer {
   sourceBuffer!: SourceBuffer;
   selected: Video = {};
   videoDuration: number;
+  videoComponent: VideoComponent;
+  activeItem: Video = {};
 
-  constructor(manifestJSON: Manifest, network: Network) {
+  constructor(
+    manifestJSON: Manifest,
+    network: Network,
+    videoComponent: VideoComponent,
+  ) {
     this.manifestJSON = manifestJSON;
     this.network = network;
     this.videoDuration = 0;
+    this.videoComponent = videoComponent;
   }
 
   initializeCodec() {
@@ -50,7 +58,54 @@ export class VideoMediaPlayer {
       // evita rodar como "LIVE"
       mediaSource.duration = this.videoDuration;
       await this.fileDownload(selected.url);
+      setInterval(this.waitForQuestion.bind(this), 200);
     };
+  }
+
+  async nextChunk(data: 'violao' | 'guitarra' | 'finalizar') {
+    const selected = this.manifestJSON[data];
+    this.selected = {
+      ...selected,
+      // ajusta o tempo que o modal vai aparecer
+      at: parseInt(this.videoElement.currentTime + selected.at),
+    };
+
+    this.videoElement.play();
+    console.log(selected);
+
+    await this.fileDownload(selected.url);
+  }
+
+  clickOption(event: any) {
+    const target = event.target.id;
+
+    if (
+      target === 'violao' ||
+      target === 'guitarra' ||
+      target === 'finalizar'
+    ) {
+      this.nextChunk(target);
+    }
+  }
+
+  waitForQuestion() {
+    const currentTime = parseInt(this.videoElement.currentTime);
+    const option = this.selected.at === currentTime;
+
+    if (!option) return;
+    if (this.activeItem.url === this.selected.url) return;
+
+    if (this.selected.options) {
+      this.videoComponent.configureModal(this.selected.options);
+      const [option1, option2] = this.selected.options;
+      document
+        .getElementById(option1)
+        ?.addEventListener('click', this.clickOption.bind(this));
+      document
+        .getElementById(option2)
+        ?.addEventListener('click', this.clickOption.bind(this));
+      this.activeItem = this.selected;
+    }
   }
 
   async fileDownload(url = '') {
