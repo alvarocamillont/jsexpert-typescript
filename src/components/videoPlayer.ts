@@ -71,7 +71,7 @@ export class VideoMediaPlayer {
     };
 
     this.videoElement.play();
-    console.log(selected);
+    console.log(this.selected);
 
     await this.fileDownload(selected.url);
   }
@@ -124,11 +124,10 @@ export class VideoMediaPlayer {
   setVideoPlayerDuration(finalURL: string) {
     const bars = finalURL.split('/');
     const [name, videoDuration] = bars[bars.length - 1].split('-');
-    this.videoDuration += parseInt(videoDuration);
+    this.videoDuration += parseFloat(videoDuration);
   }
   async processBufferSegments(allSegments: ArrayBuffer) {
     this.sourceBuffer.appendBuffer(allSegments);
-    console.log('source', this.sourceBuffer);
 
     return new Promise((resolve, reject) => {
       const updateEnd = () => {

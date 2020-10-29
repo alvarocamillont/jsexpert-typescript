@@ -12,7 +12,7 @@ export class VideoComponent {
     });
 
     player.addChild(modal);
-    player.on('play', () => modal.close);
+    player.on('play', () => modal.close());
 
     this.modal = modal;
   }
