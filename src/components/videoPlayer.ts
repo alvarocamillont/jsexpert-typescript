@@ -43,7 +43,6 @@ export class VideoMediaPlayer {
 
       const mediaSource = new MediaSource();
       this.videoElement.src = URL.createObjectURL(mediaSource);
-      console.log('this.videoElement.src ', this.videoElement.src);
       mediaSource.addEventListener(
         'sourceopen',
         this.sourceOpenWrapper(mediaSource),
@@ -62,6 +61,19 @@ export class VideoMediaPlayer {
     };
   }
 
+  async currentFileResolution() {
+    const LOWEST_RESOLUTION = '144';
+    const prepareUrl: NetworkManifest = {
+      url: this.manifestJSON.finalizar.url as string,
+      fileResolution: LOWEST_RESOLUTION,
+      fileResolutionTag: this.manifestJSON.fileResolutionTag,
+      hostTag: this.manifestJSON.hostTag,
+    };
+
+    const url = this.network.parseManifestURL(prepareUrl);
+    return this.network.getProperResolution(url);
+  }
+
   async nextChunk(data: 'violao' | 'guitarra' | 'finalizar') {
     const selected = this.manifestJSON[data];
     this.selected = {
@@ -71,7 +83,6 @@ export class VideoMediaPlayer {
     };
 
     this.videoElement.play();
-    console.log(this.selected);
 
     await this.fileDownload(selected.url);
   }
@@ -109,9 +120,10 @@ export class VideoMediaPlayer {
   }
 
   async fileDownload(url = '') {
+    const fileResolution = await this.currentFileResolution();
     const prepareUrl: NetworkManifest = {
       url,
-      fileResolution: '360',
+      fileResolution,
       fileResolutionTag: this.manifestJSON.fileResolutionTag,
       hostTag: this.manifestJSON.hostTag,
     };
