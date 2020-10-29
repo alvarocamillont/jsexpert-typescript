@@ -12,6 +12,7 @@ export class VideoMediaPlayer {
   videoDuration: number;
   videoComponent: VideoComponent;
   activeItem: Video = {};
+  selections: Array<string> = [];
 
   constructor(
     manifestJSON: Manifest,
@@ -82,6 +83,8 @@ export class VideoMediaPlayer {
       at: parseInt(this.videoElement.currentTime + selected.at),
     };
 
+    this.manageLag(this.selected);
+
     this.videoElement.play();
 
     await this.fileDownload(selected.url);
@@ -151,5 +154,14 @@ export class VideoMediaPlayer {
       this.sourceBuffer.addEventListener('updateend', updateEnd);
       this.sourceBuffer.addEventListener('error', reject);
     });
+  }
+
+  manageLag(selected: Video) {
+    const url = selected.url as string;
+    if (!!~this.selections.indexOf(url)) {
+      if (selected.at) selected.at += 5;
+      return;
+    }
+    this.selections.push(url);
   }
 }
